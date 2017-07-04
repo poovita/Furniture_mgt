@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Furniture_databaseModel_selledpart" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="selled_part_data" annotation:LazyLoadingEnabled="true">
+    <FunctionImport Name="Get_selled_part_data" ReturnType="Collection(Furniture_databaseModel_selledpart.Get_selled_part_data_Result)">
+      <Parameter Name="Bill_no" Mode="In" Type="Int32" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="Get_selled_part_data_Result">
+    <Property Type="Decimal" Name="s_bill_no" Nullable="false" Precision="18" Scale="0" />
+    <Property Type="String" Name="s_cust_name" Nullable="false" MaxLength="50" />
+    <Property Type="DateTime" Name="s_date" Nullable="false" />
+    <Property Type="String" Name="s_part_name" Nullable="false" MaxLength="50" />
+    <Property Type="Decimal" Name="s_qty" Nullable="false" Precision="18" Scale="0" />
+    <Property Type="Decimal" Name="s_price" Nullable="false" Precision="18" Scale="0" />
+    <Property Type="Decimal" Name="s_amt" Nullable="false" Precision="18" Scale="0" />
+    <Property Type="Decimal" Name="s_discount" Nullable="false" Precision="18" Scale="0" />
+    <Property Type="Decimal" Name="s_net" Nullable="false" Precision="18" Scale="0" />
+  </ComplexType>
+</Schema>

@@ -1,0 +1,228 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <OctoPackPlus_ClickOnce_Imported>true</OctoPackPlus_ClickOnce_Imported>
+  </PropertyGroup>
+
+
+  <!-- Hook into the BeforeBuild activity -->
+  <PropertyGroup>
+    <BuildDependsOn>
+      OctoPackPlus_ClickOnce_BeforeBuild;
+      $(BuildDependsOn);
+      OctoPackPlus_ClickOnce_AfterBuild;
+    </BuildDependsOn>
+  </PropertyGroup>
+
+
+  <Target Name="OctoPackPlus_ClickOnce_BeforeBuild">
+    <CallTarget Targets="OctoPlus_ClickOnce_Properties_RELEASE"
+                Condition=" '$(Configuration)' == 'Release' "
+                />
+  </Target>
+
+
+  <Target Name="OctoPackPlus_ClickOnce_AfterBuild">
+    <CallTarget Targets="OctoPlus_ClickOnce_BuildC1Package"
+                Condition=" '$(Configuration)' == 'Release' "
+                />
+  </Target>
+
+
+
+  <Target Name="OctoPlus_ClickOnce_Properties_RELEASE">
+
+    <Message Text="RunOctoPack: $(RunOctoPack)" />
+    <PropertyGroup>
+      <!-- disable octopack (temporarily) -->
+      <RunOctoPack>false</RunOctoPack>
+
+      <!-- OctoPackPlus will set RunOctoPack to true, unless overridden -->
+      <OctoPackPlus_RunOctoPack_Override>false</OctoPackPlus_RunOctoPack_Override>
+
+      <!-- future restore value -->
+      <OctoPackPlus_ClickOnce_RunOctoPack>true</OctoPackPlus_ClickOnce_RunOctoPack>
+    </PropertyGroup>
+    <Message Text="RunOctoPack (override): $(RunOctoPack)" />
+    <Message Text="RunOctoPack (cached):   $(OctoPackPlus_ClickOnce_RunOctoPack)" />
+
+
+    <XmlPeek Namespaces="" XmlInputPath="DeployC1Settings.xml" Query="/Settings/@ProjectPath">
+      <Output TaskParameter="Result" ItemName="DeploymentProj" />
+    </XmlPeek>
+    <Message Text="Project to package: @(DeploymentProj)" />
+
+    <XmlPeek Namespaces="" XmlInputPath="DeployC1Settings.xml" Query="/Settings/Environments/Environment/text()">
+      <Output TaskParameter="Result" ItemName="DeploymentEnvironments" />
+    </XmlPeek>
+    <Message Text="Environments: @(DeploymentEnvironments)" />
+
+  </Target>
+
+
+
+
+
+
+
+  <Target Name="OctoPlus_ClickOnce_BuildC1Package">
+    <Message Text="Building ClickOnce of projects" />
+    <PropertyGroup>
+      <C1Proj>%(DeploymentProj.Identity)</C1Proj>
+    </PropertyGroup>
+    <Message Text="C1Proj      : $(C1Proj)" />
+
+    <PropertyGroup>
+      <C1Proj_Abs>$([System.IO.Path]::GetFullPath($(C1Proj)))</C1Proj_Abs>
+    </PropertyGroup>
+    <Message Text="C1Proj_Abs  : $(C1Proj_Abs)" />
+
+    <PropertyGroup>
+      <C1Proj_Path>$([System.IO.Path]::GetDirectoryName($(C1Proj_Abs)))</C1Proj_Path>
+    </PropertyGroup>
+    <Message Text="C1Proj_Path : $(C1Proj_Path)" />
+
+    <PropertyGroup>
+      <C1_OutDir_Abs Condition=" '$(OutDir)' == '$(OutputPath)' ">$(MSBuildProjectDirectory)\$(OutDir.TrimEnd('\'))</C1_OutDir_Abs>
+      <C1_OutDir_Abs Condition=" '$(OutDir)' != '$(OutputPath)' ">$(OutDir)</C1_OutDir_Abs>
+    </PropertyGroup>
+    <Message Text="C1_OutDir_Abs : $(C1_OutDir_Abs)" />
+
+    <PropertyGroup>
+      <C1_OutDir_Rel>$([MSBuild]::MakeRelative($(C1Proj_Path), $(C1_OutDir_Abs)).TrimEnd("\"))</C1_OutDir_Rel>
+    </PropertyGroup>
+    <Message Text="C1_OutDir_Rel : $(C1_OutDir_Rel)" />
+
+    <Exec Command="&quot;$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\bin\MSBuild.exe&quot; &quot;$(MSBuildProjectFile)&quot; /t:OctoPlus_ClickOnce_BuildC1PackagePerEnv /p:Configuration=$(Configuration);Platform=$(Platform);C1Proj=&quot;$(C1Proj_Abs)&quot;;C1Env=&quot;%(DeploymentEnvironments.Identity)&quot;;C1Path=&quot;$(C1_OutDir_Rel)&quot;" />
+<!--
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="BuildC1PackagePerEnv" Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration);%(_MSBuildProjectReferenceExistent.SetPlatform);C1Proj=$(C1Proj_Abs);C1Env=%(DeploymentEnvironment.Identity);C1Path=$(C1_OutDir_Rel)" />
+-->
+
+
+    <!-- re-enable and run OctoPack -->
+    <PropertyGroup>
+        <RunOctoPack>$(OctoPackPlus_ClickOnce_RunOctoPack)</RunOctoPack>
+    </PropertyGroup>
+    <Message Text="RunOctoPack (restored): $(RunOctoPack)" />
+
+
+    <!-- since the targets aren't working directly, the alternative is to simply rerun MSBuild, using the specific target -->
+    <Exec Command="&quot;$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\bin\MSBuild.exe&quot; &quot;$(MSBuildProjectFile)&quot; /t:OctoPack /p:Configuration=$(Configuration);Platform=$(Platform);RunOctoPack=true;TargetPath=&quot;$(TargetPath)&quot;;OctoPackPackageVersion=&quot;$(OctoPackPackageVersion)&quot;;OctoPackPublishPackageToFileShare=&quot;$(OctoPackPublishPackageToFileShare)&quot;;OctoPackPublishPackageToHttp=&quot;$(OctoPackPublishPackageToHttp)&quot;;OctoPackPublishApiKey=&quot;$(OctoPackPublishApiKey)&quot;" />
+<!--
+    <CallTarget Targets="OctoPack" />
+-->
+
+
+  </Target>
+
+
+
+
+
+  <Target Name="OctoPlus_ClickOnce_BuildC1PackagePerEnv">
+    <!-- this target is called from OctoPlus_ClickOnce_BuildC1Package, for each ClickOnce environment. -->
+    <!-- Variables in this target MUST BE SENT DURING THE CALL TO MSBUILD, EXPLICITELY                 -->
+
+    <Message Text="Building ClickOnce for environment [ $(C1Env) ] to path [ $(C1Path) ] of project [ $(C1Proj) ]" />
+    <PropertyGroup>
+      <DeploySettingsXPath_Build_AssemblyName>/Settings/Build/AssemblyName/@$(C1Env)</DeploySettingsXPath_Build_AssemblyName>
+      <DeploySettingsXPath_Build_ConfigFile>/Settings/Build/ConfigFile/@$(C1Env)</DeploySettingsXPath_Build_ConfigFile>
+      <DeploySettingsXPath_ClickOnce_PublishLocation>/Settings/ClickOnce/PublishLocation/@$(C1Env)</DeploySettingsXPath_ClickOnce_PublishLocation>
+      <DeploySettingsXPath_ClickOnce_ProductName>/Settings/ClickOnce/ProductName/@$(C1Env)</DeploySettingsXPath_ClickOnce_ProductName>
+    </PropertyGroup>
+    <Message Text="DeploySettingsXPath_Build_AssemblyName         : $(DeploySettingsXPath_Build_AssemblyName)" />
+    <Message Text="DeploySettingsXPath_Build_ConfigFile           : $(DeploySettingsXPath_Build_ConfigFile)" />
+    <Message Text="DeploySettingsXPath_ClickOnce_PublishLocation  : $(DeploySettingsXPath_ClickOnce_PublishLocation)" />
+    <Message Text="DeploySettingsXPath_ClickOnce_ProductName      : $(DeploySettingsXPath_ClickOnce_ProductName)" />
+
+    <XmlPeek XmlInputPath="DeployC1Settings.xml" Query="$(DeploySettingsXPath_Build_AssemblyName)">
+      <Output TaskParameter="Result" ItemName="C1_AssemblyName" />
+    </XmlPeek>
+    <XmlPeek XmlInputPath="DeployC1Settings.xml" Query="$(DeploySettingsXPath_Build_ConfigFile)">
+      <Output TaskParameter="Result" ItemName="C1_EnvConfigFile" />
+    </XmlPeek>
+    <XmlPeek XmlInputPath="DeployC1Settings.xml" Query="/Settings/Build/ConfigFile/@destination">
+      <Output TaskParameter="Result" ItemName="C1_ConfigFileDestination" />
+    </XmlPeek>
+    <XmlPeek XmlInputPath="DeployC1Settings.xml" Query="/Settings/Build/ConfigFile/@mode">
+      <Output TaskParameter="Result" ItemName="C1_ConfigFileMode" />
+    </XmlPeek>
+    <XmlPeek XmlInputPath="DeployC1Settings.xml" Query="$(DeploySettingsXPath_ClickOnce_PublishLocation)">
+      <Output TaskParameter="Result" ItemName="C1_PublishLocation" />
+    </XmlPeek>
+    <XmlPeek XmlInputPath="DeployC1Settings.xml" Query="$(DeploySettingsXPath_ClickOnce_ProductName)">
+      <Output TaskParameter="Result" ItemName="C1_ProductName" />
+    </XmlPeek>
+    <ReadLinesFromFile File="Version.txt">
+      <Output TaskParameter="Lines" ItemName="NuVersion" />
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <C1Proj_Path>$([System.IO.Path]::GetDirectoryName($(C1Proj)))</C1Proj_Path>
+      <C1_AssemblyName>%(C1_AssemblyName.Identity)</C1_AssemblyName>
+      <C1_EnvConfigFile>$(C1Proj_Path)\%(C1_EnvConfigFile.Identity)</C1_EnvConfigFile>
+      <C1_ConfigFileDestination>$(C1Proj_Path)\%(C1_ConfigFileDestination.Identity)</C1_ConfigFileDestination>
+      <C1_ConfigFileMode>%(C1_ConfigFileMode.Identity)</C1_ConfigFileMode>
+      <C1_PublishLocation>%(C1_PublishLocation.Identity)</C1_PublishLocation>
+      <C1_ProductName>%(C1_ProductName.Identity)</C1_ProductName>
+      <C1_Version>%(NuVersion.Identity)</C1_Version>
+      <C1_PublishLocation_Formatted>$(C1_PublishLocation.Replace("\","/"))</C1_PublishLocation_Formatted>
+    </PropertyGroup>
+    <Message Text="C1Proj_Path               : $(C1Proj_Path)" />
+    <Message Text="C1_AssemblyName           : $(C1_AssemblyName)" />
+    <Message Text="C1_EnvConfigFile          : $(C1_EnvConfigFile)" />
+    <Message Text="C1_ConfigFileDestination  : $(C1_ConfigFileDestination)" />
+    <Message Text="C1_ConfigFileMode         : $(C1_ConfigFileMode)" />
+    <Message Text="C1_PublishLocation        : $(C1_PublishLocation)" />
+    <Message Text="C1_PublishLocation_Fmt    : $(C1_PublishLocation_Formatted)" />
+    <Message Text="C1_ProductName            : $(C1_ProductName)" />
+    <Message Text="C1_Version                : $(C1_Version)" />
+
+    <!-- make backup of proj and config -->
+    <Copy SourceFiles="$(C1Proj)"                   DestinationFiles="$(C1Proj).Backup"                   />
+    <Copy SourceFiles="$(C1_ConfigFileDestination)" DestinationFiles="$(C1_ConfigFileDestination).Backup" />
+    <!-- remove ReadOnly (result of getting files from TFS) -->
+    <Exec Command="attrib -r &quot;$(C1Proj)&quot;" />
+    <Exec Command="attrib -r &quot;$(C1_ConfigFileDestination)&quot;" />
+
+    <!-- apply DeploySettings changes to proj file -->
+    <XmlPoke XmlInputPath="$(C1Proj)"
+             Namespaces="&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003' /&gt;"
+             Query="/msb:Project/msb:PropertyGroup/msb:AssemblyName"
+             Value="$(C1_AssemblyName)"
+             />
+    <XmlPoke XmlInputPath="$(C1Proj)"
+             Namespaces="&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003' /&gt;"
+             Query="/msb:Project/msb:PropertyGroup/msb:ApplicationVersion"
+             Value="$(C1_Version)"
+             />
+    <XmlPoke XmlInputPath="$(C1Proj)"
+             Namespaces="&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003' /&gt;"
+             Query="/msb:Project/msb:PropertyGroup/msb:ProductName"
+             Value="$(C1_ProductName)"
+             />
+    <XmlPoke XmlInputPath="$(C1Proj)"
+             Namespaces="&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003' /&gt;"
+             Query="/msb:Project/msb:PropertyGroup/msb:PublishUrl"
+             Value="$(C1_PublishLocation_Formatted)"
+             />
+    <!-- apply environment config file -->
+    <Copy SourceFiles="$(C1_EnvConfigFile)" DestinationFiles="$(C1_ConfigFileDestination)" Condition=" '$(C1_ConfigFileMode)' == 'Replace' " />
+
+    <!-- backup modified csproj to environment, just for reference -->
+    <Exec Command="del &quot;$(C1Proj).$(C1Env)&quot;" />
+    <Copy SourceFiles="$(C1Proj)" DestinationFiles="$(C1Proj).$(C1Env)"       />
+
+    <!-- msbuild -->
+    <Exec Command="&quot;$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\bin\MSBuild.exe&quot; &quot;$(C1Proj)&quot; /t:Clean;SetGenerateManifests;Build;PublishOnly /p:Configuration=$(Configuration);Platform=$(Platform);OutDir=$(C1Path)\pkg\Build\$(C1Env);PublishDir=$(C1Path)\pkg\Deploy\$(C1Env)\" />
+
+    <!-- delete modified proj, and environment-specific config file -->
+    <Exec Command="del &quot;$(C1Proj)&quot;" />
+    <Exec Command="del &quot;$(C1_ConfigFileDestination)&quot;" />
+    <!-- restore proj/config from backup -->
+    <Copy SourceFiles="$(C1Proj).Backup"                   DestinationFiles="$(C1Proj)"                   />
+    <Copy SourceFiles="$(C1_ConfigFileDestination).Backup" DestinationFiles="$(C1_ConfigFileDestination)" />
+    <!-- delete backup -->
+    <Exec Command="del &quot;$(C1Proj).Backup&quot;" />
+    <Exec Command="del &quot;$(C1_ConfigFileDestination).Backup&quot;" />
+
+  </Target>
+</Project>

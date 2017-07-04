@@ -1,0 +1,78 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <OctoPackPlus_Core_Imported>true</OctoPackPlus_Core_Imported>
+  </PropertyGroup>
+
+
+  <!-- Hook into the BeforeBuild activity -->
+  <PropertyGroup>
+    <BuildDependsOn>
+      OctoPackPlus_Core_BeforeBuild;
+      $(BuildDependsOn);
+    </BuildDependsOn>
+  </PropertyGroup>
+
+  <Target Name="OctoPackPlus_Core_BeforeBuild">
+    <CallTarget Targets="OctoProperties_RELEASE" Condition=" '$(Configuration)' == 'Release' " />
+    <CallTarget Targets="OctoProperties_TFBuild" Condition=" '$(TeamBuildConstants)' == '_TEAM_BUILD_' " />
+  </Target>
+
+  <Target Name="OctoProperties_RELEASE">
+    <Exec ContinueOnError="True"
+          Command="powershell -ExecutionPolicy ByPass -file ../packages/OctoPackPlus.Core.0.1.13/tools/GenerateNuSpec.ps1 -MSBuildProjectName &quot;$(MSBuildProjectName)&quot; -MSBuildProjectFile &quot;$(MSBuildProjectFile)&quot; -MSBuildProjectDirectory &quot;$(MSBuildProjectDirectory)&quot; -buildLabel &quot;$(BuildLabel)&quot; -outDir &quot;$(OutDir)\&quot; -verbose"
+          >
+      <Output TaskParameter="exitcode" ItemName="exitcodes"/>
+    </Exec>
+<!--
+    <Error Text="Error occured while executing GenerateNuSpec.ps1"
+           Condition=" '%(exitcodes.identity)' != 1 "
+           />
+-->
+
+    <!-- rename Deploy.nuSpec (and overwrite) to ProjName.nuspec -->
+    <Exec Command="del $(MSBuildProjectName).nuspec" />
+    <Exec Command="rename Deploy.nuspec $(MSBuildProjectName).nuspec" />
+    <ReadLinesFromFile File="Version.txt">
+      <Output TaskParameter="Lines" ItemName="NuVersion" />
+    </ReadLinesFromFile>
+    <Message Text="Generating version: @(NuVersion)" />
+    <PropertyGroup>
+      <OctoPackPackageVersion>@(NuVersion)</OctoPackPackageVersion>
+
+      <!-- set RunOctoPack (true by default, or override) -->
+      <RunOctoPack Condition=" '$(OctoPackPlus_RunOctoPack_Override)' == '' ">true</RunOctoPack>
+      <RunOctoPack Condition=" '$(OctoPackPlus_RunOctoPack_Override)' != '' ">$(OctoPackPlus_RunOctoPack_Override)</RunOctoPack>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="OctoProperties_TFBuild">
+    <!-- read from DeploySettings.XML -->
+    <XmlPeek Namespaces="" XmlInputPath="DeploySettings.xml" Query="/Settings/OctoPublishToPath/text()">
+      <Output TaskParameter="Result" ItemName="OctoPlusCore_OctoPublishToPath" />
+    </XmlPeek>
+    <XmlPeek Namespaces="" XmlInputPath="DeploySettings.xml" Query="/Settings/OctoPublishToHttp/text()">
+      <Output TaskParameter="Result" ItemName="OctoPlusCore_OctoPublishToHttp" />
+    </XmlPeek>
+    <XmlPeek Namespaces="" XmlInputPath="DeploySettings.xml" Query="/Settings/OctoPublishApiKey/text()">
+      <Output TaskParameter="Result" ItemName="OctoPlusCore_OctoPublishApiKey" />
+    </XmlPeek>
+    <!-- convert from @(item) to $(Property) -->
+    <PropertyGroup>
+      <OctoPlusCore_OctoPublishToPath>%(OctoPlusCore_OctoPublishToPath.Identity)</OctoPlusCore_OctoPublishToPath>
+      <OctoPlusCore_OctoPublishToHttp>%(OctoPlusCore_OctoPublishToHttp.Identity)</OctoPlusCore_OctoPublishToHttp>
+      <OctoPlusCore_OctoPublishApiKey>%(OctoPlusCore_OctoPublishApiKey.Identity)</OctoPlusCore_OctoPublishApiKey>
+    </PropertyGroup>
+
+    <!-- diag/logging -->
+    <Message Text="Octopus Package Publish To Path: $(OctoPlusCore_OctoPublishToPath)" />
+    <Message Text="Octopus Package Publish To HTTP: $(OctoPlusCore_OctoPublishToHttp)" />
+    <Message Text="Octopus Package Publish API Key: $(OctoPlusCore_OctoPublishApiKey)" />
+
+    <!-- assign to octo -->
+    <PropertyGroup>
+      <OctoPackPublishPackageToFileShare Condition=" '$(OctoPlusCore_OctoPublishToPath)' != '' ">$(OctoPlusCore_OctoPublishToPath)</OctoPackPublishPackageToFileShare>
+      <OctoPackPublishPackageToHttp      Condition=" '$(OctoPlusCore_OctoPublishToHttp)' != '' ">$(OctoPlusCore_OctoPublishToHttp)</OctoPackPublishPackageToHttp>
+      <OctoPackPublishApiKey             Condition=" '$(OctoPlusCore_OctoPublishApiKey)' != '' ">$(OctoPlusCore_OctoPublishApiKey)</OctoPackPublishApiKey>
+    </PropertyGroup>
+  </Target>
+</Project>

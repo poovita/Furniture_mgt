@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>myService</id>
+    <version>1.0.0.@@BuildNumber@@</version>
+    <description>DescriptionHere</description>
+    <authors>YourNameHere</authors>
+    <!--
+    <owners>YourNameHere</owners>
+    <licenseUrl>http://#</licenseUrl>
+    <projectUrl>http://#</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <releaseNotes>
+    </releaseNotes>
+    -->
+  </metadata>
+  <files>
+    <!-- symbols into subfolder -->
+    <file target="Symbols"
+          src="@@outdir@@\*.pdb"
+          exclude="@@outdir@@\@@MSBuildProjectName@@.*"
+          />
+    
+    <!-- everything into root (exclude this projects' DLL, since it's just a deployment wrapper) -->
+    <file target=""
+          src="@@outdir@@\*.*"
+          exclude="@@outdir@@\@@MSBuildProjectName@@.*;@@outdir@@\*.pdb"
+          />
+  </files>
+</package>

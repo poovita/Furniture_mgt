@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DailyModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="DailyEntities1" annotation:LazyLoadingEnabled="true">
+    <FunctionImport Name="dailyreportform" ReturnType="Collection(DailyModel.dailyreportform_Result)">
+      <Parameter Name="dateStart" Mode="In" Type="DateTime" />
+      <Parameter Name="dateEnd" Mode="In" Type="DateTime" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="dailyreportform_Result">
+    <Property Type="String" Name="Faculty" Nullable="true" MaxLength="50" />
+    <Property Type="DateTime" Name="Date" Nullable="true" Precision="23" />
+    <Property Type="Int32" Name="Class" Nullable="true" />
+    <Property Type="String" Name="Time" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Subject" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Head" Nullable="true" MaxLength="50" />
+  </ComplexType>
+</Schema>

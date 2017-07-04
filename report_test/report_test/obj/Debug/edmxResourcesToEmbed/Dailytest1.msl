@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="DailytestModelStoreContainer" CdmEntityContainer="DailytestEntities">
+    <FunctionImportMapping FunctionImportName="dailyreportform" FunctionName="DailytestModel.Store.dailyreportform">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="DailytestModel.dailyreportform_Result">
+          <ScalarProperty Name="Faculty" ColumnName="Faculty" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="Class" ColumnName="Class" />
+          <ScalarProperty Name="Time" ColumnName="Time" />
+          <ScalarProperty Name="Subject" ColumnName="Subject" />
+          <ScalarProperty Name="Head" ColumnName="Head" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+  </EntityContainerMapping>
+</Mapping>

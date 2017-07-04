@@ -1,0 +1,15 @@
+c:\users\abhi\documents\visual studio 2015\Projects\report_test\report_test\bin\Debug\report_test.exe.config
+c:\users\abhi\documents\visual studio 2015\Projects\report_test\report_test\bin\Debug\report_test.exe
+c:\users\abhi\documents\visual studio 2015\Projects\report_test\report_test\bin\Debug\report_test.pdb
+c:\users\abhi\documents\visual studio 2015\Projects\report_test\report_test\bin\Debug\EntityFramework.dll
+c:\users\abhi\documents\visual studio 2015\Projects\report_test\report_test\bin\Debug\EntityFramework.SqlServer.dll
+c:\users\abhi\documents\visual studio 2015\Projects\report_test\report_test\bin\Debug\Microsoft.ReportViewer.WinForms.dll
+c:\users\abhi\documents\visual studio 2015\Projects\report_test\report_test\bin\Debug\EntityFramework.xml
+c:\users\abhi\documents\visual studio 2015\Projects\report_test\report_test\bin\Debug\EntityFramework.SqlServer.xml
+c:\users\abhi\documents\visual studio 2015\Projects\report_test\report_test\obj\Debug\report_test.Form1.resources
+c:\users\abhi\documents\visual studio 2015\Projects\report_test\report_test\obj\Debug\report_test.Properties.Resources.resources
+c:\users\abhi\documents\visual studio 2015\Projects\report_test\report_test\obj\Debug\report_test.csproj.GenerateResource.Cache
+c:\users\abhi\documents\visual studio 2015\Projects\report_test\report_test\obj\Debug\report_test.exe
+c:\users\abhi\documents\visual studio 2015\Projects\report_test\report_test\obj\Debug\report_test.pdb
+c:\users\abhi\documents\visual studio 2015\Projects\report_test\report_test\obj\Debug\RdlCompile.cache
+c:\users\abhi\documents\visual studio 2015\Projects\report_test\report_test\obj\Debug\RdlCompile.compiled
