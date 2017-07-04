@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<Settings ProjectPath="..\Service\myService.csproj">
-  <OctoPublishToPath />
-  <OctoPublishToHttp>http://octopus/nuget/packages</OctoPublishToHttp>
-  <OctoPublishApiKey>API-ABCDEFGHIJKLMNOPQRSTUVWXYZ</OctoPublishApiKey>
-</Settings>
