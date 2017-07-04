@@ -39,7 +39,10 @@ namespace Furniture_Mgt
 
         private void Seller_page_Load(object sender, EventArgs e)
         {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 92def7a3f647e5ad1983e429c35b5c9a1f827ec8
             this.Height = Screen.PrimaryScreen.WorkingArea.Height;
             this.Width = Screen.PrimaryScreen.WorkingArea.Width;
             this.Location = Screen.PrimaryScreen.WorkingArea.Location;
@@ -472,7 +475,11 @@ namespace Furniture_Mgt
             {
                   conn.Open();
 
+<<<<<<< HEAD
                 SqlCommand cmd = new SqlCommand("INSERT INTO s_bill_auto_generate Values('" + textBox2.Text + "','" + textBox8.Text + "','" + textBox9.Text + "','" + textBox12.Text + "','" + textBox10.Text + "','" + textBox11.Text + "','" + dateTimePicker1.Text + "')", conn);
+=======
+                SqlCommand cmd = new SqlCommand("INSERT INTO s_bill_auto_generate Values('" + textBox2.Text + "','" + textBox8.Text + "','" + textBox9.Text + "','" + textBox12.Text + "','" + textBox10.Text + "','" + textBox11.Text + "')", conn);
+>>>>>>> 92def7a3f647e5ad1983e429c35b5c9a1f827ec8
                 cmd.ExecuteNonQuery();
                 conn.Close();
                 MessageBox.Show("Successfully Saved...!!");

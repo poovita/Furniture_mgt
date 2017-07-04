@@ -17,3 +17,7 @@ C:\Users\abhi\documents\visual studio 2015\Projects\Furniture_Mgt\Furniture_Mgt\
 C:\Users\abhi\documents\visual studio 2015\Projects\Furniture_Mgt\Furniture_Mgt\obj\Debug\Furniture_Mgt.pdb
 C:\Users\abhi\documents\visual studio 2015\Projects\Furniture_Mgt\Furniture_Mgt\obj\Debug\RdlCompile.cache
 C:\Users\abhi\documents\visual studio 2015\Projects\Furniture_Mgt\Furniture_Mgt\obj\Debug\RdlCompile.compiled
+<<<<<<< HEAD
+=======
+C:\Users\abhi\documents\visual studio 2015\Projects\Furniture_Mgt\Furniture_Mgt\obj\Debug\Furniture_Mgt.csprojResolveAssemblyReference.cache
+>>>>>>> 92def7a3f647e5ad1983e429c35b5c9a1f827ec8

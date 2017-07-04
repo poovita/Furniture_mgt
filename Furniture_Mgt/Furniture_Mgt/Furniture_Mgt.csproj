@@ -58,11 +58,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <Compile Include="Bill_information.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Bill_information.xsd</DependentUpon>
     </Compile>
+=======
+>>>>>>> 92def7a3f647e5ad1983e429c35b5c9a1f827ec8
     <Compile Include="Component1_part.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,10 +84,20 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
+<<<<<<< HEAD
     <Compile Include="Parts_information.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Parts_information.xsd</DependentUpon>
+=======
+    <Compile Include="Furniture_databaseDataSet.cs">
+      <DependentUpon>Furniture_databaseDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Furniture_databaseDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Furniture_databaseDataSet.xsd</DependentUpon>
+>>>>>>> 92def7a3f647e5ad1983e429c35b5c9a1f827ec8
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -106,7 +119,10 @@
     <Compile Include="Seller_page.Designer.cs">
       <DependentUpon>Seller_page.cs</DependentUpon>
     </Compile>
+<<<<<<< HEAD
     <Compile Include="sqlcommand.cs" />
+=======
+>>>>>>> 92def7a3f647e5ad1983e429c35b5c9a1f827ec8
     <Compile Include="Suplier.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -136,7 +152,10 @@
       <DependentUpon>Purchase_page.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Report1.rdlc" />
+<<<<<<< HEAD
     <EmbeddedResource Include="Report2.rdlc" />
+=======
+>>>>>>> 92def7a3f647e5ad1983e429c35b5c9a1f827ec8
     <EmbeddedResource Include="Selled_Report_print.resx">
       <DependentUpon>Selled_Report_print.cs</DependentUpon>
     </EmbeddedResource>
@@ -146,6 +165,7 @@
     <EmbeddedResource Include="Suplier.resx">
       <DependentUpon>Suplier.cs</DependentUpon>
     </EmbeddedResource>
+<<<<<<< HEAD
     <None Include="Bill_information.xsc">
       <DependentUpon>Bill_information.xsd</DependentUpon>
     </None>
@@ -169,6 +189,20 @@
     <None Include="Parts_information.xss">
       <DependentUpon>Parts_information.xsd</DependentUpon>
     </None>
+=======
+    <None Include="Furniture_databaseDataSet.xsc">
+      <DependentUpon>Furniture_databaseDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="Furniture_databaseDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>Furniture_databaseDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Furniture_databaseDataSet.xss">
+      <DependentUpon>Furniture_databaseDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+>>>>>>> 92def7a3f647e5ad1983e429c35b5c9a1f827ec8
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

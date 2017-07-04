@@ -53,6 +53,7 @@ namespace Furniture_Mgt
             new Purchase_page().Show();
             this.Hide();
         }
+<<<<<<< HEAD
 
         private void label6_Click(object sender, EventArgs e)
         {
@@ -88,5 +89,7 @@ namespace Furniture_Mgt
         {
 
         }
+=======
+>>>>>>> 92def7a3f647e5ad1983e429c35b5c9a1f827ec8
     }
 }
